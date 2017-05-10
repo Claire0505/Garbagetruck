@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         garbagetrucklist = new ArrayList<>();
         lv = (ListView)findViewById(R.id.list);
+        lv.setOnItemClickListener(onClickListView);
 
         new GetGarbagetrucks().execute();
 
@@ -158,13 +160,39 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this,
                     garbagetrucklist,
                     R.layout.list_item,
-                    new String[]{"title","content"},
-                    new int[]{R.id.title, R.id.content});
+                    new String[]{"title","content","lng","lat"},
+                    new int[]{R.id.title, R.id.content, R.id.lng, R.id.lat});
             lv.setAdapter(adapter);
             lv.setTextFilterEnabled(true);
 
         }
     }
+
+   private AdapterView.OnItemClickListener onClickListView = new AdapterView.OnItemClickListener() {
+       @Override
+       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+           TextView text1 = (TextView)view.findViewById(R.id.title);
+           TextView text2 = (TextView)view.findViewById(R.id.content);
+           TextView text3 = (TextView)view.findViewById(R.id.lng);
+           TextView text4 = (TextView)view.findViewById(R.id.lat);
+
+           String title = text1.getText().toString();
+           String content = text2.getText().toString();
+           String lng = text3.getText().toString();
+           String lat = text4.getText().toString();
+
+           Intent intent = new Intent(MainActivity.this, Garbagetruck_List_Activity.class);
+           //傳送資料
+           intent.putExtra("title", title);
+           intent.putExtra("content", content);
+           intent.putExtra("lng", lng);
+           intent.putExtra("lat", lat);
+           startActivity(intent);
+
+//           Toast.makeText(MainActivity.this, "點選第 " + (position + 1)
+//                   + "個\n內容:" + title , Toast.LENGTH_SHORT).show();
+       }
+   };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
